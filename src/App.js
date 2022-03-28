@@ -1,59 +1,37 @@
-import './App.css';
-import {ColorPicker,TextField} from '@shopify/polaris'
-import { useState,useEffect } from 'react';
-import axios from 'axios';
-import { HexColorPicker } from "react-colorful";
+import React,{useState} from 'react';
+import Header from './components/Header';
+import theme from './components/Theme';
+import {ThemeProvider} from '@material-ui/styles';
+import {BrowserRouter,Route,Switch} from 'react-router-dom';
+import Body from './components/Body';
 
+
+console.log("Theme object",theme);
 
 function App() {
-  const [color, setColor] = useState("#aabbcc");
-  // const [color,setColor] = useState({
-  //     hue: 120,
-  //     brightness: 1,
-  //     saturation: 1,
-  //     alpha:1
-  // });
-  const [value,setValue] = useState('');
-  const [imageUrl,setImageUrl] = useState('');
-  // const colorr = convert.hsv.rgb(color)
-  // console.log(color,colorr);
-  const quote = value.length > 0 ? value : 'Your Quote Goes Here';
-  useEffect(() =>
-  {
-    axios.post('https://g2-task-manager.herokuapp.com/tasks/getUrlOfImage',{
-      actualQuote:quote,
-      color
-  })
-    .then(function (response) {
-      setImageUrl(response.data);
-      setValue("");
-    })
-    .catch(function (error) {
-      console.log(error.message);
-    });
-  },[color]);
-
+  const [value,setValue] = useState(0);
+  const [selectedIndex,setSelectedIndex] = useState(0);
   return (
-    <div className="App" style={{margin:15}}>
-      <TextField 
-      placeholder='Your Quote Goes Here' 
-      label="Enter Quote" 
-      value={value} 
-      onChange={(newValue) =>{setValue(newValue)}} 
-      autoComplete="off"
-      id="searchBar"
-      /><br />
-      <HexColorPicker color={color} onChange={(newColor) => {
-       if(value === '')
-       {
-        return alert("please select quote first!")
-       };
-       setColor(newColor);
-
-      }}  />
-      {/* <ColorPicker color={color} onChange={(newColor)=>{setColor(newColor)}} allowAlpha/><br /><br /> */}
-      <img src={imageUrl} alt="image" />
-    </div>
+    <ThemeProvider theme={theme} >
+      <BrowserRouter>
+      <div>
+       <Header value={value} setValue={setValue} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} />
+       <Body />
+       {/* <Switch>
+       <Route path="/" exact={true} render={(props) => <LandingPage {...props} value={value} setValue={setValue} setSelectedIndex={setSelectedIndex} />} />
+       <Route path="/services" exact={true} render={(props) => <Services {...props} value={value} setValue={setValue} />} />
+       <Route path="/customsoftware" exact={true} render={(props) => <CustomSoftware {...props} value={value} setValue={setValue} setSelectedIndex={setSelectedIndex} />} />
+       <Route path="/mobileapps" exact={true} render={(props) => (<MobileApps {...props} setValue={setValue} setSelectedIndex={setSelectedIndex} />)} />
+       <Route path="/websites" exact={true} component={() => <div>Websites</div>} />
+       <Route path="/revolution" exact={true} component={() => <div>The Revolution</div>} />
+       <Route path="/about" exact={true} component={() => <div>About Us</div>} />
+       <Route path="/contact" exact={true} component={() => <div>Contact Us</div>} />
+       <Route path="/estimate" exact={true} component={() => <div>Estimate</div>} />
+       </Switch> */}
+       </div>
+      </BrowserRouter>
+      
+    </ThemeProvider>
   );
 }
 
